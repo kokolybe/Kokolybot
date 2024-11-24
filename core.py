@@ -1,7 +1,6 @@
 import ampalibe
-from ampalibe import Messenger, Payload
+from ampalibe import Messenger, Payload, Model
 from ampalibe.ui import Button, Type
-import Model
 import requests  # Pour envoyer une requête à l'API
 
 chat = Messenger()
