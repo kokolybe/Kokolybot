@@ -4,7 +4,7 @@ from ampalibe.ui import Button, Type
 import requests  # Pour envoyer une requête à l'API
 
 chat = Messenger()
-query = Query()
+query = Model()
 
 # Définir le menu persistant
 persistent_menu = [
