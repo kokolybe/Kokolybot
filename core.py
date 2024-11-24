@@ -1,5 +1,5 @@
 import ampalibe
-from ampalibe import Messenger, Query, Payload
+from ampalibe import Messenger, Payload
 from ampalibe.ui import Button, Type
 import requests  # Pour envoyer une requête à l'API
 
