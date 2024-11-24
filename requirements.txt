@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+retry
+requests_toolbelt
+requests
+aiocron
+colorama
+tinydb
+httpx
+sqlmodel
+sqladmin
