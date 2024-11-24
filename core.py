@@ -1,5 +1,6 @@
 import ampalibe
 from ampalibe import Messenger
+from ampalibe.messenger import Filetype
 import requests  # Pour envoyer une requête à l'API
 
 chat = Messenger()
@@ -24,3 +25,4 @@ def main(sender_id, cmd, **ext):
 
     # Répondre à l'utilisateur
     chat.send_text(sender_id, bot_reply)
+    chat.send_file_url(sender_id, 'https://i.imgflip.com/6b45bi.jpg', filetype=Filetype.image)
