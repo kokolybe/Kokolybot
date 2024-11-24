@@ -12,12 +12,11 @@ persistent_menu = [
     Button(type=Type.postback, title='Menu', payload=Payload('/menu')),
     Button(type=Type.postback, title='Musique', payload=Payload('/spotify'))
 ]
-    chat.persistent_menu(sender_id, persistent_menu)
-
 
 # Commande principale pour gérer les messages du bot général
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
+    chat.persistent_menu(sender_id, persistent_menu)
     # Construire l'URL de l'API avec le message de l'utilisateur
     api_url = f"https://kaiz-apis.gleeze.com/api/gpt-4o?q={cmd}&uid={sender_id}"
 
