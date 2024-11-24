@@ -7,12 +7,23 @@ import requests  # Pour envoyer une requête à l'API
 chat = Messenger()
 query = Model()
 
-# Définir le menu persistant
-persistent_menu = [
-    Button(type=Type.postback, title='Menu', payload=Payload('/menu')),
-    Button(type=Type.postback, title='Musique', payload=Payload('/spotify'))
-]
+@ampalibe.command('/setup')
+def setup(sender_id, **ext):
+    # Étape 1 : Configurer le bouton "Get Started"
+    chat.get_started(payload="/start")
+    chat.send_text(sender_id, "Le bouton 'Get Started' a été configuré avec succès !")
 
+    # Étape 2 : Configurer le menu persistant
+    persistent_menu = [
+        Button(type=Type.postback, title='Menu', payload=Payload('/menu')),
+        Button(type=Type.postback, title='Musique', payload=Payload('/spotify'))
+    ]
+    chat.persistent_menu(sender_id, persistent_menu)
+    chat.send_text(sender_id, "Le menu persistant a été configuré avec succès !")
+
+@ampalibe.command('/start')
+def start(sender_id, **ext):
+    chat.send_text(sender_id, "Bienvenue dans le bot ! Utilisez le menu pour explorer les options.")
 # Commande principale pour gérer les messages du bot général
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
