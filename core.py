@@ -79,9 +79,7 @@ def get_song_title(sender_id, cmd, **ext):
     # Répondre à l'utilisateur avec le résultat
     chat.send_text(sender_id, bot_reply)
     chat.send_file_url(sender_id, song_url, filetype=Filetype.audio)
-    chat.send_quick_reply(
-        sender_id,
-        "Voulez-vous chercher une autre chanson ?",
+    chat.send_quick_reply(sender_id, quick_rep, "Voulez-vous chercher une autre chanson ?",
         quick_replies=[
             QuickReply(
                 title="Oui",
