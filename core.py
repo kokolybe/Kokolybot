@@ -25,10 +25,9 @@ def setup(sender_id, **ext):
 def start(sender_id, **ext):
     chat.send_text(sender_id, "Bienvenue dans le bot ! Utilisez le menu pour explorer les options.")
 # Commande principale pour gérer les messages du bot général
+
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
-    chat.persistent_menu(sender_id, persistent_menu)
-    chat.get_started()
     # Construire l'URL de l'API avec le message de l'utilisateur
     api_url = f"https://kaiz-apis.gleeze.com/api/gpt-4o?q={cmd}&uid={sender_id}"
 
@@ -79,4 +78,4 @@ def get_song_title(sender_id, cmd, **ext):
 
     # Répondre à l'utilisateur avec le résultat
     chat.send_text(sender_id, bot_reply)
-    chat.send_file_url(sender_id, 'song_url', filetype=Filetype.audio)
+    chat.send_file_url(sender_id, song_url, filetype=Filetype.audio)
