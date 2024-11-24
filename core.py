@@ -7,11 +7,6 @@ chat = Messenger()
 # Commande principale pour gérer les messages entrants
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
-    # Marquer le message comme vu
-    chat.mark_seen(sender_id)
-
-    # Activer l'état "typing"
-    chat.typing_on(sender_id)
 
     # Construire l'URL de l'API avec le message de l'utilisateur
     api_url = f"https://kaiz-apis.gleeze.com/api/gpt-4o?q={cmd}&uid={sender_id}"
@@ -26,9 +21,6 @@ def main(sender_id, cmd, **ext):
             bot_reply = "Erreur lors de la connexion à l'API."
     except Exception as e:
         bot_reply = f"Une erreur est survenue : {e}"
-
-    # Désactiver l'état "typing"
-    chat.typing_off(sender_id)
 
     # Répondre à l'utilisateur
     chat.send_text(sender_id, bot_reply)
