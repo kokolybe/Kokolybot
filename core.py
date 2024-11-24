@@ -17,6 +17,7 @@ persistent_menu = [
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
     chat.persistent_menu(sender_id, persistent_menu)
+    chat.get_started()
     # Construire l'URL de l'API avec le message de l'utilisateur
     api_url = f"https://kaiz-apis.gleeze.com/api/gpt-4o?q={cmd}&uid={sender_id}"
 
