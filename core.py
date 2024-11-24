@@ -79,17 +79,18 @@ def get_song_title(sender_id, cmd, **ext):
     # Répondre à l'utilisateur avec le résultat
     chat.send_text(sender_id, bot_reply)
     chat.send_file_url(sender_id, song_url, filetype=Filetype.audio)
-    chat.send_quick_reply(sender_id, quick_rep, "Voulez-vous chercher une autre chanson ?",
-        quick_replies=[
-            QuickReply(
-                title="Oui",
-                payload="/spotify",
-                image_url="https://i.pinimg.com/236x/2b/1d/e7/2b1de7265af232b446a0de943eb47b43.jpg"  # URL valide
-            ),
-            QuickReply(
-                title="Non",
-                payload="/menu",
-                image_url="https://i.pinimg.com/736x/0e/09/b3/0e09b3871254565400df91d6a90e6c33.jpg"  # URL valide
-            ),
-        ]
-            )
+    quick_rep = [
+    QuickReply(
+        title="Oui",
+        payload=Payload("/spotify"),
+        image_url="https://i.pinimg.com/236x/2b/1d/e7/2b1de7265af232b446a0de943eb47b43.jpg"
+    ),
+    QuickReply(
+        title="Non",
+        payload=Payload("/menu"),
+        image_url="https://i.pinimg.com/736x/0e/09/b3/0e09b3871254565400df91d6a90e6c33.jpg"
+    ),
+]
+
+# next=True in parameter for displaying directly next list quick_reply
+chat.send_quick_reply(sender_id, quick_rep, 'Voulez-vous chercher une autre chanson ?')
