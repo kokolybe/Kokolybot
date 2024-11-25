@@ -48,6 +48,7 @@ def main(sender_id, cmd, **ext):
         bot_reply = f"Une erreur est survenue : {e}"
 
     # Répondre à l'utilisateur
+    chat.send_action(sender_id, Action.mark_seen)
     chat.send_text(sender_id, bot_reply)
 
 
@@ -105,7 +106,6 @@ def get_song_title(sender_id, cmd, **ext):
     # Afficher les Quick Replies à l'utilisateur
     chat.send_quick_reply(sender_id, 'Voulez-vous chercher une autre chanson ?', quick_rep)
 
-@ampalibe.command('/spotify_search')
 # Commande pour demander le titre de la chanson
 @ampalibe.command('/spotify_search')
 def spotify_search(sender_id, **ext):
