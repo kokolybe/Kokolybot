@@ -48,7 +48,6 @@ def main(sender_id, cmd, **ext):
         bot_reply = f"Une erreur est survenue : {e}"
 
     # Répondre à l'utilisateur
-    chat.send_action(sender_id, Action.mark_seen)
     chat.send_text(sender_id, bot_reply)
 
 
