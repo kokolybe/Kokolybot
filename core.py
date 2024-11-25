@@ -16,7 +16,8 @@ def setup(sender_id, **ext):
     # Étape 2 : Configurer le menu persistant
     persistent_menu = [
         Button(type=Type.postback, title='Menu', payload=Payload('/menu')),
-        Button(type=Type.postback, title='Musique', payload=Payload('/spotify'))
+        Button(type=Type.postback, title='Musique', payload=Payload('/spotify')),
+        Button(type=Type.postback, title='Spotify🎶', payload=Payload('/spotify_search))
     ]
     chat.persistent_menu(sender_id, persistent_menu)
     chat.send_text(sender_id, "Le menu persistant a été configuré avec succès !")
@@ -105,7 +106,18 @@ def get_song_title(sender_id, cmd, **ext):
     chat.send_quick_reply(sender_id, 'Voulez-vous chercher une autre chanson ?', quick_rep)
 
 @ampalibe.command('/spotify_search')
-def spotify_search(sender_id, cmd, **ext):
+# Commande pour demander le titre de la chanson
+@ampalibe.command('/spotify_search')
+def spotify_search(sender_id, **ext):
+    chat.send_text(sender_id, "Entrez le titre de la chanson que vous voulez rechercher.")
+    query.set_action(sender_id, '/spotify_results')  # Enregistre l'action suivante
+
+# Action pour rechercher la chanson
+@ampalibe.action('/spotify_results')
+def get_song_title(sender_id, cmd, **ext):
+    # Effacer l'action courante
+    query.set_action(sender_id, None)
+
     # URL de recherche
     search_url = f"https://joshweb.click/search/spotify?q={cmd}"
 
@@ -114,7 +126,7 @@ def spotify_search(sender_id, cmd, **ext):
         if response.status_code == 200:
             data = response.json()
             results = data.get("result", [])
-            
+
             # Vérifier s'il y a des résultats
             if not results:
                 chat.send_text(sender_id, "Aucun résultat trouvé pour cette recherche.")
@@ -158,7 +170,6 @@ def spotify_search(sender_id, cmd, **ext):
             chat.send_text(sender_id, "Erreur lors de la connexion à l'API Spotify.")
     except Exception as e:
         chat.send_text(sender_id, f"Une erreur est survenue : {e}")
-
 
 @ampalibe.command('/musique_download')
 def musique_download(sender_id, url, title, artist, **ext):
