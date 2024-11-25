@@ -1,6 +1,6 @@
 import ampalibe
 from ampalibe import Messenger, Payload, Model
-from ampalibe.ui import Button, Type, QuickReply
+from ampalibe.ui import Element, Button, Type, QuickReply
 from ampalibe.messenger import Filetype
 import requests  # Pour envoyer une requête à l'API
 
