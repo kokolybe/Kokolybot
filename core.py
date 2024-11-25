@@ -103,3 +103,84 @@ def get_song_title(sender_id, cmd, **ext):
 
     # Afficher les Quick Replies à l'utilisateur
     chat.send_quick_reply(sender_id, 'Voulez-vous chercher une autre chanson ?', quick_rep)
+
+@ampalibe.command('/spotify_search')
+def spotify_search(sender_id, cmd, **ext):
+    # URL de recherche
+    search_url = f"https://joshweb.click/search/spotify?q={cmd}"
+
+    try:
+        response = requests.get(search_url)
+        if response.status_code == 200:
+            data = response.json()
+            results = data.get("result", [])
+            
+            # Vérifier s'il y a des résultats
+            if not results:
+                chat.send_text(sender_id, "Aucun résultat trouvé pour cette recherche.")
+                return
+
+            # Créer la liste des éléments pour le générique template
+            list_items = []
+
+            for song in results:
+                # Boutons pour chaque chanson
+                buttons = [
+                    Button(
+                        type=Type.postback,
+                        title="Écouter",
+                        payload=Payload(
+                            "/musique_download",
+                            url=song['direct_url'],
+                            title=song['title'],
+                            artist=song['artist']
+                        ),
+                    ),
+                    Button(
+                        type=Type.web_url,
+                        title="Voir sur Spotify",
+                        url=song['url'],
+                    ),
+                ]
+
+                # Ajouter un élément au générique template
+                list_items.append(
+                    Element(
+                        title=f"{song['title']} - {song['artist']}",
+                        image_url="https://i.imgur.com/6b45bi.jpg",  # Placeholder pour l'image
+                        buttons=buttons,
+                    )
+                )
+
+            # Envoyer le générique template avec pagination
+            chat.send_generic_template(sender_id, list_items, next="Page suivante")
+        else:
+            chat.send_text(sender_id, "Erreur lors de la connexion à l'API Spotify.")
+    except Exception as e:
+        chat.send_text(sender_id, f"Une erreur est survenue : {e}")
+
+
+@ampalibe.command('/musique_download')
+def musique_download(sender_id, url, title, artist, **ext):
+    try:
+        # Vérifier si l'URL directe existe
+        if not url:
+            chat.send_text(sender_id, "Lien de téléchargement indisponible pour cette chanson.")
+            return
+
+        # Télécharger le fichier audio
+        response = requests.get(url)
+        if response.status_code == 200:
+            # Renommer et enregistrer le fichier
+            filename = f"{title} - {artist}.mp3"
+            filepath = f"/tmp/{filename}"
+
+            with open(filepath, "wb") as file:
+                file.write(response.content)
+
+            # Envoyer le fichier à l'utilisateur
+            chat.send_file(sender_id, filepath)
+        else:
+            chat.send_text(sender_id, "Erreur lors du téléchargement de la musique.")
+    except Exception as e:
+        chat.send_text(sender_id, f"Une erreur est survenue : {e}")
