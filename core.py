@@ -28,15 +28,19 @@ def start(sender_id, **ext):
 
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
-    # Construire l'URL de l'API avec le message de l'utilisateur
-    api_url = f"https://kaiz-apis.gleeze.com/api/gpt-4o?q={cmd}&uid={sender_id}"
+    # Construire l'URL de l'API avec les paramètres appropriés
+    api_url = f"https://joshweb.click/api/gpt-4o?q={cmd}&uid={sender_id}"
 
-    # Envoyer une requête GET à l'API
     try:
+        # Envoyer une requête GET à l'API
         response = requests.get(api_url)
         if response.status_code == 200:
             data = response.json()  # Décoder la réponse JSON
-            bot_reply = data.get("response", "Désolé, je n'ai pas pu obtenir de réponse.")
+            if data.get("status"):
+                # Utiliser le champ "result" pour répondre
+                bot_reply = data.get("result", "Je n'ai pas pu obtenir de réponse.")
+            else:
+                bot_reply = "L'API a retourné une réponse invalide."
         else:
             bot_reply = "Erreur lors de la connexion à l'API."
     except Exception as e:
