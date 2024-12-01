@@ -228,7 +228,7 @@ def youtube_results(sender_id, cmd, **ext):
             # Créer la liste des éléments pour le générique template
             list_items = []
 
-            for video in results[:10]:  # Limiter à 10 résultats
+            for video in results[:25]:  # Limiter à 25 résultats
                 title = video.get('title')
                 video_id = video.get('videoId')
                 view_count = video.get('viewCount', 'N/A')
@@ -268,3 +268,38 @@ def youtube_results(sender_id, cmd, **ext):
             chat.send_text(sender_id, "Erreur lors de la connexion à l'API YouTube.")
     except Exception as e:
         chat.send_text(sender_id, f"Une erreur est survenue : {e}") 
+
+@ampalibe.command('/download_video')
+def download_video(sender_id, video_id, **ext):
+    # Appel à l'API pour obtenir le lien de téléchargement de la vidéo
+    url = "https://ytstream-download-youtube-videos.p.rapidapi.com/dl"
+    querystring = {"id": video_id}
+    headers = {
+        "x-rapidapi-key": "36f745d486mshd6d8e5421dd8280p1f06d0jsn7a4caec6be1c",
+        "x-rapidapi-host": "ytstream-download-youtube-videos.p.rapidapi.com"
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=querystring)
+        if response.status_code == 200:
+            data = response.json()
+            formats = data.get("adaptiveFormats", [])
+
+            # Rechercher le format n°10 (ou autre selon le besoin)
+            video_url = None
+            if len(formats) > 10:
+                video_url = formats[10].get("url")
+
+            if video_url:
+                chat.send_text(sender_id, "Voici le lien pour télécharger la vidéo :")
+                chat.send_file_url(sender_id, video_url, filetype=Filetype.video)
+            else:
+                chat.send_text(sender_id, "Impossible de récupérer le lien de la vidéo.")
+        else:
+            chat.send_text(sender_id, "Erreur lors de la récupération des informations vidéo.")
+    except Exception as e:
+        chat.send_text(sender_id, f"Une erreur est survenue : {e}")
+
+@ampalibe.command('/listen_video')
+def listen_video(sender_id, video_id, **ext):
+    chat.send_text(sender_id, "Cette fonctionnalité sera implémentée prochainement.")
