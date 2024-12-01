@@ -18,7 +18,7 @@ def setup(sender_id, **ext):
         Button(type=Type.postback, title='Menu', payload=Payload('/menu')),
         Button(type=Type.postback, title='Musique', payload=Payload('/spotify')),
         Button(type=Type.postback, title='Spotify🎶', payload=Payload('/spotify_search')),
-        Button(type=Type.postback, title='Spotify🎶', payload=Payload('/youtube_search'))
+        Button(type=Type.postback, title='YouTube🎶', payload=Payload('/youtube_search'))
     ]
     chat.persistent_menu(sender_id, persistent_menu)
     chat.send_text(sender_id, "Le menu persistant a été configuré avec succès !")
