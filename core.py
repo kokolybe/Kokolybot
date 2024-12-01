@@ -228,7 +228,7 @@ def youtube_results(sender_id, cmd, **ext):
             # Créer la liste des éléments pour le générique template
             list_items = []
 
-            for video in results[:25]:  # Limiter à 25 résultats
+            for video in results[:10]:  # Limiter à 25 résultats
                 title = video.get('title')
                 video_id = video.get('videoId')
                 view_count = video.get('viewCount', 'N/A')
