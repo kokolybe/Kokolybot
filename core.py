@@ -104,7 +104,7 @@ def get_song_title(sender_id, cmd, **ext):
     ]
 
     # Afficher les Quick Replies à l'utilisateur
-    chat.send_quick_reply(sender_id, 'Voulez-vous chercher une autre chanson ?', quick_rep)
+    chat.send_quick_reply(sender_id, quick_rep, 'Voulez-vous chercher une autre chanson ?')
 
 # Commande pour demander le titre de la chanson
 @ampalibe.command('/spotify_search')
