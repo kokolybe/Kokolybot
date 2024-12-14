@@ -31,7 +31,7 @@ def start(sender_id, **ext):
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
     # Construire l'URL de l'API avec les paramètres appropriés
-    api_url = f"https://joshweb.click/api/gpt-4o?q={cmd}&uid={sender_id}"
+    api_url = f"https://api.joshweb.click/ai/neural-chat-7b?q={cmd}&uid={sender_id}"
 
     try:
         # Envoyer une requête GET à l'API
