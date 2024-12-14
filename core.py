@@ -67,14 +67,19 @@ def get_song_title(sender_id, cmd, **ext):
 
     # Construire l'URL pour rechercher la chanson
     search_url = f"https://kaiz-apis.gleeze.com/api/spotify-search?q={cmd}"
+    song_url = None  # Initialiser song_url
 
     try:
         response = requests.get(search_url)
         if response.status_code == 200:
             data = response.json()  # Décoder la réponse JSON
-            song_url = data.get("url", None)
-            if song_url:
-                bot_reply = f"Voici le lien pour la chanson '{cmd}' :\n{song_url}"
+
+            # Vérifier si la réponse est une liste et contient des chansons
+            if isinstance(data, list) and data:
+                song = data[0]  # Utiliser la première chanson
+                song_url = song.get("trackUrl")
+                title = song.get("title", "Inconnu")
+                bot_reply = f"Voici le lien pour la chanson '{title}' :\n{song_url}"
             else:
                 bot_reply = f"Désolé, aucun résultat trouvé pour '{cmd}'."
         else:
@@ -85,7 +90,7 @@ def get_song_title(sender_id, cmd, **ext):
     # Répondre à l'utilisateur avec le résultat
     chat.send_text(sender_id, bot_reply)
     
-    # Envoyer l'audio
+    # Envoyer l'audio si song_url existe
     if song_url:
         chat.send_file_url(sender_id, song_url, filetype=Filetype.audio)
     
