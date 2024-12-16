@@ -30,23 +30,30 @@ def start(sender_id, **ext):
 
 @ampalibe.command('/')
 def main(sender_id, cmd, **ext):
+    # Marquer le message de l'utilisateur comme lu
+    chat.send_action(sender_id, Action.mark_seen)
+
+    # Indiquer que le bot est en train de taper
+    chat.send_action(sender_id, Action.typing_on)
+
     # Construire l'URL de l'API avec les paramètres appropriés
-    api_url = f"https://api.joshweb.click/ai/neural-chat-7b?q={cmd}&uid={sender_id}"
+    api_url = f"https://kaiz-apis.gleeze.com/api/gemini-pro?q={cmd}&uid={sender_id}"
 
     try:
         # Envoyer une requête GET à l'API
         response = requests.get(api_url)
         if response.status_code == 200:
             data = response.json()  # Décoder la réponse JSON
-            if data.get("status"):
-                # Utiliser le champ "result" pour répondre
-                bot_reply = data.get("result", "Je n'ai pas pu obtenir de réponse.")
-            else:
-                bot_reply = "L'API a retourné une réponse invalide."
+            
+            # Extraire le champ "response" de la réponse JSON
+            bot_reply = data.get("response", "Je n'ai pas pu obtenir de réponse.")
         else:
             bot_reply = "Erreur lors de la connexion à l'API."
     except Exception as e:
         bot_reply = f"Une erreur est survenue : {e}"
+
+    # Arrêter l'indication de "taper"
+    chat.send_action(sender_id, Action.typing_off)
 
     # Répondre à l'utilisateur
     chat.send_text(sender_id, bot_reply)
