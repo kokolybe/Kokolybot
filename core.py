@@ -216,10 +216,8 @@ def youtube_search(sender_id, **ext):
 
 @ampalibe.action('/youtube_results')
 def youtube_results(sender_id, cmd, **ext):
-    # Effacer l'action courante
     query.set_action(sender_id, None)
 
-    # Appel à l'API pour rechercher la vidéo YouTube
     url = "https://yt-api.p.rapidapi.com/search"
     querystring = {"query": cmd}
     headers = {
@@ -233,54 +231,55 @@ def youtube_results(sender_id, cmd, **ext):
             data = response.json()
             results = data.get("data", [])
 
-            # Vérifier s'il y a des résultats
             if not results:
                 chat.send_text(sender_id, "Aucune vidéo trouvée pour cette recherche.")
                 return
 
-            # Créer la liste des éléments pour le générique template
             list_items = []
 
-            for video in results[:10]:  # Limiter à 25 résultats
-                title = video.get('title')
-                video_id = video.get('videoId')
-                view_count = video.get('viewCount', 'N/A')
-                thumbnail_url = video['thumbnail'][0].get('url')
+            for video in results[:10]:
+                try:
+                    title = video.get('title', 'Titre indisponible')
+                    video_id = video.get('videoId', 'ID indisponible')
+                    view_count = video.get('viewCount', 'N/A')
 
-                # Boutons pour chaque vidéo
-                buttons = [
-                    Button(
-                        type=Type.postback,
-                        title="Écouter",
-                        payload=Payload("/listen_video", video_id=video_id)
-                    ),
-                    Button(
-                        type=Type.web_url,
-                        title="Regarder",
-                        url=f"https://www.youtube.com/watch?v={video_id}"
-                    ),
-                    Button(
-                        type=Type.postback,
-                        title="Télécharger",
-                        payload=Payload("/download_video", video_id=video_id)
-                    ),
-                ]
+                    thumbnail_url = None
+                    if 'thumbnail' in video and isinstance(video['thumbnail'], list) and video['thumbnail']:
+                        thumbnail_url = video['thumbnail'][0].get('url', 'https://via.placeholder.com/150')
 
-                # Ajouter un élément au générique template
-                list_items.append(
-                    Element(
-                        title=f"{title} ({view_count} vues)",
-                        image_url=thumbnail_url,
-                        buttons=buttons,
+                    buttons = [
+                        Button(
+                            type=Type.postback,
+                            title="Écouter",
+                            payload=Payload("/listen_video", video_id=video_id)
+                        ),
+                        Button(
+                            type=Type.web_url,
+                            title="Regarder",
+                            url=f"https://www.youtube.com/watch?v={video_id}"
+                        ),
+                        Button(
+                            type=Type.postback,
+                            title="Télécharger",
+                            payload=Payload("/download_video", video_id=video_id)
+                        ),
+                    ]
+
+                    list_items.append(
+                        Element(
+                            title=f"{title} ({view_count} vues)",
+                            image_url=thumbnail_url,
+                            buttons=buttons,
+                        )
                     )
-                )
+                except Exception as e:
+                    print(f"Erreur lors du traitement d'une vidéo : {e}")
 
-            # Envoyer le générique template avec pagination
             chat.send_generic_template(sender_id, list_items, next="Page suivante")
         else:
             chat.send_text(sender_id, "Erreur lors de la connexion à l'API YouTube.")
     except Exception as e:
-        chat.send_text(sender_id, f"Une erreur est survenue : {e}") 
+        chat.send_text(sender_id, f"Une erreur est survenue : {e}")
 
 @ampalibe.command('/download_video')
 def download_video(sender_id, video_id, **ext):
