@@ -283,20 +283,15 @@ def youtube_results(sender_id, cmd, **ext):
 
 @ampalibe.command('/download_video')
 def download_video(sender_id, video_id, **ext):
-    # Appel à l'API pour obtenir le lien de téléchargement de la vidéo
-    url = "https://ytstream-download-youtube-videos.p.rapidapi.com/dl"
-    querystring = {"id": video_id}
-    headers = {
-        "x-rapidapi-key": "36f745d486mshd6d8e5421dd8280p1f06d0jsn7a4caec6be1c",
-        "x-rapidapi-host": "ytstream-download-youtube-videos.p.rapidapi.com"
-    }
+    # URL de l'API mise à jour
+    url = f"https://ytb-api-k1f7.onrender.com/download?id={video_id}"
 
     try:
-        response = requests.get(url, headers=headers, params=querystring)
+        response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
-            formats = data.get("adaptiveFormats", []) + data.get("formats", [])
-            
+            formats = data.get("formats", [])
+
             # Rechercher le format correspondant à l'itag 145
             video_url = None
             for format_item in formats:
