@@ -295,20 +295,22 @@ def download_video(sender_id, video_id, **ext):
         response = requests.get(url, headers=headers, params=querystring)
         if response.status_code == 200:
             data = response.json()
-            formats = data.get("adaptiveFormats", [])
-
-            # Rechercher le format n°10 (ou autre selon le besoin)
+            formats = data.get("adaptiveFormats", []) + data.get("formats", [])
+            
+            # Rechercher le format correspondant à l'itag 145
             video_url = None
-            if len(formats) > 10:
-                video_url = formats[10].get("url")
+            for format_item in formats:
+                if format_item.get("itag") == 145:
+                    video_url = format_item.get("url")
+                    break
 
             if video_url:
                 chat.send_text(sender_id, "Voici le lien pour télécharger la vidéo :")
                 chat.send_file_url(sender_id, video_url, filetype=Filetype.video)
             else:
-                chat.send_text(sender_id, "Impossible de récupérer le lien de la vidéo.")
+                chat.send_text(sender_id, "Aucun lien vidéo correspondant à l'itag 145 n'a été trouvé.")
         else:
-            chat.send_text(sender_id, "Erreur lors de la récupération des informations vidéo.")
+            chat.send_text(sender_id, f"Erreur lors de la récupération des informations vidéo. Code : {response.status_code}")
     except Exception as e:
         chat.send_text(sender_id, f"Une erreur est survenue : {e}")
 
