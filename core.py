@@ -295,7 +295,7 @@ def download_video(sender_id, video_id, **ext):
             # Rechercher le format correspondant à l'itag 145
             video_url = None
             for format_item in formats:
-                if format_item.get("itag") == 145:
+                if format_item.get("itag") == 244:
                     video_url = format_item.get("url")
                     break
 
