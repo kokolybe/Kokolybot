@@ -2,6 +2,8 @@ import ampalibe
 from ampalibe import Messenger, Payload, Model
 from ampalibe.ui import Element, Button, Type, QuickReply
 from ampalibe.messenger import Filetype, Action
+from ampalibe import action, send
+import json
 import requests  # Pour envoyer une requête à l'API
 
 chat = Messenger()
@@ -312,3 +314,16 @@ def download_video(sender_id, video_id, **ext):
 @ampalibe.command('/listen_video')
 def listen_video(sender_id, video_id, **ext):
     chat.send_text(sender_id, "Cette fonctionnalité sera implémentée prochainement.")
+
+@action('/uptime_kuma')
+def uptime_kuma(payload):
+    # Parse les données reçues
+    data = json.loads(payload)
+    name = data.get('name', 'Service inconnu')
+    status = data.get('status', 'N/A')
+    time = data.get('time', 'N/A')
+    message = data.get('message', f"🚨 Alerte : {name} est {status}.")
+
+    # Envoie une notification au propriétaire du bot
+    admin_sender_id = "100006808637969"  # Remplace par ton propre sender_id
+    send(admin_sender_id, f"🔔 Notification Uptime Kuma :\n{message}\n🕒 Heure : {time}")
